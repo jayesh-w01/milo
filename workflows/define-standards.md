@@ -142,7 +142,7 @@ Ask all at once:
 
 ## Step 4 — Generate Standards Documents
 
-Using the human's answers, create the three standards documents. Use the template at `milo/templates/standards-doc.md` as the base.
+Using the human's answers, create the three standards documents below. Use `milo/templates/standards-doc.md` as a structural reference — each document is a separate file covering its own concern, not a copy of the full template.
 
 ### `global-picture/standards/oss-packages.md`
 

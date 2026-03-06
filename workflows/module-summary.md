@@ -23,9 +23,13 @@ Ask the human:
 
 Locate:
 - Product Brief: `global-picture/features/{feature-name}/product-brief-{module-name}.md`
-- Module code: `modules/{module-name}/` (or wherever the module lives in the project structure)
+- Module code: `modules/{module-name}/` (all modules live here — established by `/setup-monorepo`)
 - Standards: `global-picture/standards/oss-packages.md`
 - OSS Registry: `global-picture/oss-registry/registry.json`
+
+Verify that `modules/{module-name}/` directory exists. If it does not:
+> "Cannot find `modules/{module-name}/`. The module directory does not exist — BMAD may not have created it yet, or it was created at a different path. Confirm the module is fully implemented before running `/module-summary`."
+Stop.
 
 If the Product Brief doesn't exist:
 > "No Product Brief found for `{module-name}`. A module must be initiated via `/initiate-module` before it can be summarised. Was this module built without going through Milo's initiate-module workflow?"

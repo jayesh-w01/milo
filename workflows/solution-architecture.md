@@ -103,8 +103,18 @@ For each existing module, determine:
 
 Classify each module as:
 - **Existing — reuse as-is** (use the existing API contract without changes)
-- **Existing — needs extension** (new functions needed, triggers requirements update)
+- **Existing — needs extension** (new functions needed — see below)
 - **New** (must be built as part of this feature)
+
+**Handling "Existing — needs extension" modules:**
+
+If an existing module needs new functions, those new functions become part of this feature's scope. Treat the extension as an additional work item:
+1. Note the module and the required new functions in the Solution Architecture document under **Module Requirements**.
+2. When generating the dependency graph, treat the extended module as a dependency that must be updated before dependent modules begin.
+3. During `/initiate-module`, the extended module will be initiated first — its Product Brief will include both existing functions (for context) and the new functions to be added by BMAD.
+4. Run `/module-summary` for the extended module after BMAD adds the new functions, updating its `global-picture/api-docs/` entry before dependents are unblocked.
+
+> **Note:** Do not attempt to define new function signatures for an existing module here. Note the *capability needed* and let `/initiate-module` produce the precise API contract.
 
 ---
 
