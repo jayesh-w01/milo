@@ -42,6 +42,8 @@
 
 **Signature:**
 ```typescript
+// Note: only use synchronous signatures when there is zero I/O (e.g. JWT decode + expiry check).
+// If the function touches a DB, file, network, or external service — it must be async.
 export async function {functionName}(
   {paramName}: {Type},
   {paramName}: {Type}
@@ -182,10 +184,11 @@ The module is done when **all** of the following are true:
 - [ ] Every exported function has a corresponding REST endpoint in `server.ts`
 - [ ] The smart call wrapper in `proxy.ts` correctly routes based on `DEPLOYMENT_MODE`
 - [ ] All packages used are from the standards list in Section 4
-- [ ] Unit tests exist for all exported functions
-- [ ] Integration tests exist for REST endpoints
+- [ ] Unit tests exist for all exported functions (happy path + each error case)
+- [ ] Integration tests exist for all REST endpoints
 - [ ] `global-picture/api-docs/{module-name}.md` is created with final function signatures
 - [ ] No functions are exported that are not listed in Section 2 (no scope creep)
+- [ ] Any function that validates a token or signature does so cryptographically — not just by decoding the payload
 - [ ] {feature-specific criterion}
 - [ ] {feature-specific criterion}
 

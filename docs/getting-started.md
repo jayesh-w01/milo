@@ -18,17 +18,27 @@ Then authenticate:
 claude login
 ```
 
-**2. BMAD**
-BMAD is the agentic development tool that Milo coordinates with. Get it from the [BMAD repository](https://github.com/bmad-dev/bmad-method). You'll need it during `/setup-monorepo` — have it ready as a local folder or a GitHub URL.
+**2. Node.js 20+**
+Required to install BMAD via `npx`:
+```bash
+node --version   # must be 20+
+```
 
-**3. gh CLI** (optional, but recommended)
+**3. BMAD**
+BMAD v6 is installed via its CLI installer — no manual copying needed. During `/setup-monorepo`, Milo will run the installer for you. Or install it yourself at any time:
+```bash
+npx bmad-method install --modules bmm --tools claude-code
+```
+BMAD installs to `_bmad/` in your project root. Do not commit this folder — each developer runs the installer themselves.
+
+**4. gh CLI** (optional, but recommended)
 If you want Milo to create your GitHub repository automatically:
 ```bash
 brew install gh   # macOS
 gh auth login
 ```
 
-**4. A fresh, empty directory**
+**5. A fresh, empty directory**
 Milo is for greenfield projects only. Do not use it on an existing codebase. Start with an empty folder.
 
 ---
@@ -58,10 +68,13 @@ This directory will become the root of your mono-repo. Everything — Milo, BMAD
 
 You need the Milo files inside your project as a `milo/` subfolder before opening Claude Code. There are two ways to do this:
 
-**Option A: Clone from GitHub**
+**Option A: Clone from GitHub (then remove the nested .git)**
 ```bash
 git clone https://github.com/jayesh-w01/milo milo
+rm -rf milo/.git
 ```
+
+> **Important:** Always remove `milo/.git` after cloning. If you don't, git treats `milo/` as a submodule — its files won't be committed to your project repo and other developers won't get them.
 
 **Option B: Copy from a local version**
 ```bash
@@ -123,10 +136,10 @@ It looks for `.git/`, `milo/`, `bmad/`, and any other existing files. It reports
 - Runs `git init`
 - Creates the `modules/` directory
 - Creates `.gitignore` with sensible defaults
-- Installs BMAD (clones it to `bmad/`)
+- Installs BMAD via `npx bmad-method install` (to `_bmad/`)
 - Creates the project root `README.md`
 - Creates `CLAUDE.md` at the project root (this is the key file that registers all slash commands)
-- Makes the initial commit
+- Makes the initial commit (`_bmad/` is excluded — not committed)
 - If you said yes to GitHub: creates the repo and pushes
 
 **Human gate:** Claude presents a summary and asks for confirmation before finalising.
@@ -136,9 +149,9 @@ After you approve, your project looks like:
 my-new-project/
 ├── CLAUDE.md              ← registers Milo's slash commands
 ├── README.md              ← project readme
-├── .gitignore
-├── milo/                  ← Milo enterprise layer
-├── bmad/                  ← BMAD implementation workflows
+├── .gitignore             ← includes _bmad/ and _bmad-output/
+├── milo/                  ← Milo enterprise layer (committed)
+├── _bmad/                 ← BMAD (installed locally, NOT committed)
 └── modules/               ← empty, ready for development
 ```
 
@@ -216,7 +229,7 @@ my-new-project/
 ├── README.md
 ├── .gitignore
 ├── milo/
-├── bmad/
+├── _bmad/                      ← installed locally, not committed
 ├── modules/                    ← still empty
 └── global-picture/
     ├── standards/
@@ -244,8 +257,8 @@ You ran Claude Code from the wrong directory, or forgot to copy Milo in. Check t
 **"gh CLI is not authenticated"**
 Run `gh auth login` in a separate terminal, complete the authentication, then come back to Claude Code.
 
-**BMAD clone fails**
-Check the URL is correct and you have internet access. If it fails, skip the GitHub option and copy BMAD manually later: `cp -r /path/to/bmad ./bmad`. BMAD's absence does not block the rest of setup.
+**BMAD installation fails**
+Check that Node.js 20+ is installed and you have internet access. If `npx bmad-method install` fails, skip it during setup and run it manually later from the project root. BMAD's absence does not block setup — it only blocks `/initiate-module`.
 
 **Slash commands not recognised after setup**
 Make sure `CLAUDE.md` was created at the project root (not inside `milo/`). If it's missing, something went wrong in step 4. Check by running `ls CLAUDE.md` in your project root.

@@ -250,9 +250,10 @@ Instruct the human:
 
 > "Product Brief approved. Hand this to BMAD:
 >
-> 1. Open a new Claude Code session (or continue in BMAD's agent context)
-> 2. Reference: `global-picture/features/{feature-name}/product-brief-{module-name}.md`
-> 3. Run BMAD's `create-architecture` workflow using this Product Brief as input
-> 4. BMAD will then proceed: Architecture → Stories → Code
+> 1. Open a new Claude Code session in this same project directory (or continue if BMAD is already active)
+> 2. If BMAD is not yet installed, run: `npx bmad-method install --modules bmm --tools claude-code`
+> 3. In the Claude Code session, say: `"I want to create architecture for a new module. The Product Brief is at global-picture/features/{feature-name}/product-brief-{module-name}.md — read it first, then let's create the architecture."`
+> 4. BMAD will run its `create-architecture` workflow. From there it proceeds: Architecture → Epics & Stories → Code
+> 5. BMAD outputs go to `_bmad-output/` — check there for generated documents
 >
-> When BMAD finishes the module, return here and run `/module-summary`."
+> When BMAD finishes the module and the code is in `modules/{module-name}/`, return here and run `/module-summary`."

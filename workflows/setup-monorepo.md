@@ -20,7 +20,7 @@ Check the current working directory:
 ```
 - Is this already a git repository? (check for .git/)
 - Is milo/ present? (Milo must be here — it's how this workflow is running)
-- Is bmad/ present?
+- Is _bmad/ present? (BMAD v6 installs to _bmad/, not bmad/)
 - Are there any existing files/folders besides milo/?
 ```
 
@@ -30,7 +30,7 @@ Report findings clearly:
 Current state:
   Git repository:  yes / no
   milo/ present:   yes / no
-  bmad/ present:   yes / no
+  _bmad/ present:  yes / no
   Other contents:  {list or "none"}
 ```
 
@@ -48,10 +48,10 @@ Ask the human (all at once):
 >
 > 1. **Project name** — what is this project called? (used for the repo name, directory naming, and README)
 > 2. **Project description** — one sentence describing what this product does
-> 3. **BMAD** — is BMAD already present in a `bmad/` folder, or does it need to be added?
->    - Already present
->    - I have a local copy at: {path}
->    - I need to clone it from GitHub (provide the BMAD repo URL)
+> 3. **BMAD** — is BMAD already installed (look for a `_bmad/` folder), or does it need to be installed?
+>    - Already installed (`_bmad/` is present)
+>    - Install now via `npx bmad-method install` (requires Node.js 20+)
+>    - I'll install it manually later
 > 4. **GitHub** — should we create a GitHub repository and push the first commit?
 >    - Yes — create a new GitHub repo now (requires `gh` CLI authenticated)
 >    - Yes — I already have a remote, just push
@@ -127,6 +127,10 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
+
+# BMAD (installed locally via npx — not committed)
+_bmad/
+_bmad-output/
 ```
 
 Create a minimal `README.md` at the project root:
@@ -141,7 +145,7 @@ Create a minimal `README.md` at the project root:
 | Folder | Purpose |
 |--------|---------|
 | `milo/` | Milo — enterprise layer (standards, architecture, module orchestration) |
-| `bmad/` | BMAD — module implementation workflows |
+| `_bmad/` | BMAD — module implementation workflows (installed by `npx bmad-method install`) |
 | `global-picture/` | Cross-module documentation: standards, API contracts, feature registry |
 | `modules/` | Individual business modules |
 
@@ -169,21 +173,26 @@ This project uses Milo + BMAD for structured enterprise development.
 
 Handle the BMAD installation based on the human's answer in Step 2:
 
-**If already present:**
-Verify `bmad/` exists and contains expected BMAD files (look for a CLAUDE.md or similar entry point inside it).
-Confirm: "BMAD found at `bmad/`. No action needed."
+**If already installed (`_bmad/` present):**
+Verify `_bmad/` exists and contains expected BMAD files (look for `_bmad/core/` and `_bmad/bmm/`).
+Confirm: "BMAD found at `_bmad/`. No action needed."
 
-**If human provided a local path:**
-Run: `cp -r {provided-path} ./bmad`
-Confirm: "BMAD copied to `bmad/`."
+**If installing now via npx:**
+Run:
+```bash
+npx bmad-method install --directory . --modules bmm --tools claude-code --yes
+```
+Confirm: "BMAD installed to `_bmad/`."
 
-**If cloning from GitHub:**
-Run: `git clone {bmad-repo-url} bmad`
-Confirm: "BMAD cloned to `bmad/`."
+> Note: BMAD v6 installs to `_bmad/` (not `bmad/`). This is intentional — do not rename the folder.
 
-After installation, verify `bmad/` is present. If BMAD installation fails for any reason:
-> "BMAD installation failed: {error}. You can add BMAD manually by placing it in a `bmad/` folder at the project root, then continue with the next steps."
-Continue with the rest of the workflow — BMAD's absence does not block the mono-repo setup.
+**If installing manually later:**
+Note: "BMAD not installed. Install it before running `/initiate-module` by running `npx bmad-method install` from the project root."
+Continue — BMAD's absence does not block the rest of setup.
+
+After installation, verify `_bmad/` is present. If BMAD installation fails for any reason:
+> "BMAD installation failed: {error}. Install manually: run `npx bmad-method install --modules bmm --tools claude-code` from the project root."
+Continue with the rest of the workflow.
 
 ---
 
@@ -192,9 +201,11 @@ Continue with the rest of the workflow — BMAD's absence does not block the mon
 Stage and commit everything created so far:
 
 ```bash
-git add milo/ bmad/ modules/ .gitignore README.md
+git add milo/ modules/ .gitignore README.md CLAUDE.md
 git commit -m "chore: initial mono-repo setup with Milo and BMAD"
 ```
+
+> Note: Do not add `_bmad/` to git. BMAD is installed locally via `npx bmad-method install` and should not be committed — each developer runs the installer. Add `_bmad/` and `_bmad-output/` to `.gitignore` instead.
 
 Confirm: "Initial commit created."
 
@@ -202,10 +213,10 @@ Show the commit summary:
 ```
 Initial commit includes:
   milo/        — Milo enterprise layer
-  bmad/        — BMAD implementation workflows (if installed)
   modules/     — empty, ready for module development
-  .gitignore   — standard ignores
+  .gitignore   — standard ignores (includes _bmad/ and _bmad-output/)
   README.md    — project overview
+  CLAUDE.md    — project root entry point
 ```
 
 ---
@@ -262,10 +273,11 @@ Project: {project-name}
 
 Directory structure:
   milo/        ✓
-  bmad/        ✓ / ✗ (not installed — add manually before module development)
+  _bmad/       ✓ / ✗ (not installed — run `npx bmad-method install` before module development)
   modules/     ✓ (empty — ready for development)
-  .gitignore   ✓
+  .gitignore   ✓ (includes _bmad/ and _bmad-output/)
   README.md    ✓
+  CLAUDE.md    ✓
 
 Git:           ✓ Initialised
 First commit:  ✓ Created
