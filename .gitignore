@@ -1,0 +1,13 @@
+# Test artefacts
+test/
+test-fresh/
+test-analysis-report.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Scratch files
+hello.txt
+*.tmp
+*.temp
